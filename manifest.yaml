@@ -1,0 +1,8 @@
+packer_zip_url: https://releases.hashicorp.com/packer/1.4.0/packer_1.4.0_linux_amd64.zip
+packer_template: example.json
+
+region: us-west-2
+source_ami_regex: "amzn2-ami-hvm-2.0.*-x86_64-gp2"
+ami_name: amzn2-ami-hvm-ucop-{{timestamp}}-x86_64-gp2
+instance_type:
+ssh_username:
