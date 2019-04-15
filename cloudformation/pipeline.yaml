@@ -26,17 +26,22 @@ Parameters:
     NotificationEmailAddress:
         Type: String
         Description: Email to receive new AMI ID created by AMI Builder
-        Default: ait-dev@ucop.edu
+        Default: "ait-dev@ucop.edu"
 
-     PackerZipUrl:
+    PackerZipUrl:
         Type: String
         Description: URL of packer binary distribution zipfile
         Default: "https://releases.hashicorp.com/packer/1.4.0/packer_1.4.0_linux_amd64.zip"
 
-     PackerTemplate:
+    PackerProjectDir:
+        Type: String
+        Description: Dirctory where to find the packer template and associated files for this build project.
+        Default: packer/amazonlinux2-x84-64
+
+    PackerTemplate:
         Type: String
         Description: Name of the packer template file to use for this build
-        Default: example.json
+        Default: packer_template.json
 
 Metadata: 
   AWS::CloudFormation::Interface: 
@@ -159,6 +164,8 @@ Resources:
                     Value: !Ref BuilderPublicSubnet
                   - Name: PACKER_ZIP_URL
                     Value: !Ref PackerZipUrl
+                  - Name: PACKER_PROJECT_DIR
+                    Value: !Ref PackerProjectDir
                   - Name: PACKER_TEMPLATE
                     Value: !Ref PackerTemplate
             ServiceRole: !GetAtt CodeBuildServiceRole.Arn
