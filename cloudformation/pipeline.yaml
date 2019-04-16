@@ -33,6 +33,7 @@ Parameters:
         Description: URL of packer binary distribution zipfile
         Default: "https://releases.hashicorp.com/packer/1.4.0/packer_1.4.0_linux_amd64.zip"
 
+<<<<<<< HEAD
     PackerProjectDir:
         Type: String
         Description: Dirctory where to find the packer template and associated files for this build project.
@@ -42,6 +43,12 @@ Parameters:
         Type: String
         Description: Name of the packer template file to use for this build
         Default: packer_template.json
+=======
+    PackerTemplate:
+        Type: String
+        Description: Name of the packer template file to use for this build
+        Default: example.json
+>>>>>>> ucopacme/master
 
 Metadata: 
   AWS::CloudFormation::Interface: 
@@ -164,8 +171,11 @@ Resources:
                     Value: !Ref BuilderPublicSubnet
                   - Name: PACKER_ZIP_URL
                     Value: !Ref PackerZipUrl
+<<<<<<< HEAD
                   - Name: PACKER_PROJECT_DIR
                     Value: !Ref PackerProjectDir
+=======
+>>>>>>> ucopacme/master
                   - Name: PACKER_TEMPLATE
                     Value: !Ref PackerTemplate
             ServiceRole: !GetAtt CodeBuildServiceRole.Arn
