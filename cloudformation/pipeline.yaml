@@ -103,8 +103,8 @@ Resources:
     CodeRepository:
         Type: AWS::CodeCommit::Repository
         Properties:
-            RepositoryName: !Sub '${ServiceName}_repo'
-            RepositoryDescription: !Sub 'Repository for ${ServiceName} service'
+            RepositoryName: !Sub '${ServiceName}-${PackerProjectName}_repo'
+            RepositoryDescription: !Sub 'Repository for ${ServiceName}-${PackerProjectName} service'
 
 
     #########
@@ -119,7 +119,7 @@ Resources:
     CodeBuildServiceRole:
         Type: AWS::IAM::Role
         Properties:
-            RoleName: !Sub '${ServiceName}_CodeBuildRole'
+            RoleName: !Sub '${ServiceName}-${PackerProjectName}_CodeBuildRole'
             Path: '/managed/'
             ManagedPolicyArns:
               - 'arn:aws:iam::aws:policy/PowerUserAccess'
@@ -146,8 +146,8 @@ Resources:
                           - 'logs:CreateLogStream'
                           - 'logs:PutLogEvents'
                         Resource:
-                          - !Sub 'arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/codebuild/${ServiceName}_build'
-                          - !Sub 'arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/codebuild/${ServiceName}_build:*'
+                          - !Sub 'arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/codebuild/${ServiceName}-${PackerProjectName}_build'
+                          - !Sub 'arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/codebuild/${ServiceName}-${PackerProjectName}_build:*'
                       - 
                         Sid: "CodeBuildToS3ArtifactRepo"
                         Effect: Allow
@@ -161,7 +161,7 @@ Resources:
     CodeBuildProject:
         Type: AWS::CodeBuild::Project
         Properties:
-            Name: !Sub '${ServiceName}_build'
+            Name: !Sub '${ServiceName}-${PackerProjectName}_build'
             Artifacts:
                 Type: CODEPIPELINE
             Environment: 
@@ -195,7 +195,7 @@ Resources:
     PipelineExecutionRole:
       Type: AWS::IAM::Role
       Properties:
-          RoleName: !Sub '${ServiceName}_PipeLineExecutionRole'
+          RoleName: !Sub '${ServiceName}-${PackerProjectName}_PipeLineExecutionRole'
           Path: '/managed/'      
           AssumeRolePolicyDocument:
               Version: '2012-10-17'
@@ -265,7 +265,7 @@ Resources:
             ArtifactStore: 
                 Location: !Ref BuildArtifactsBucket
                 Type: S3
-            Name: !Sub ${ServiceName}_pipeline
+            Name: !Sub ${ServiceName}-${PackerProjectName}_pipeline
             RoleArn: !GetAtt PipelineExecutionRole.Arn
             Stages:
                 - 
@@ -279,7 +279,7 @@ Resources:
                         Provider: CodeCommit
                         Version: 1
                       Configuration:
-                        RepositoryName: !Sub '${ServiceName}_repo'
+                        RepositoryName: !Sub '${ServiceName}-${PackerProjectName}_repo'
                         BranchName: master
                       OutputArtifacts:
                         - Name: SourceZip
