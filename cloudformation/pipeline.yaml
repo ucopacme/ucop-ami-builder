@@ -280,7 +280,7 @@ Resources:
                         Version: 1
                       Configuration:
                         RepositoryName: !Sub '${ServiceName}-${PackerProjectName}_repo'
-                        BranchName: master
+                        BranchName: !Sub '${PackerProjectName}'
                       OutputArtifacts:
                         - Name: SourceZip
                       RunOrder: 1

@@ -46,3 +46,10 @@ launch codepipeline cfn stack
 windows2016::
 
   PACKER_PROJECT_NAME=windows2016
+
+
+Notes
+-----
+
+codebuild env vars
+https://docs.aws.amazon.com/codebuild/latest/userguide/build-env-ref-env-vars.html
