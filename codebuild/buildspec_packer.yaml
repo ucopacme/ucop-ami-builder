@@ -1,7 +1,6 @@
 version: 0.2
 
 phases:
-<<<<<<< HEAD
   install:
     commands:
       - echo "Validating build environment"
@@ -20,19 +19,6 @@ phases:
     commands:
       - ./packer build -color=false $PACKER_PROJECT_DIR/$PACKER_TEMPLATE | tee build.log
 
-=======
-  pre_build:
-    commands:
-      - echo "Installing Packer"
-      #- curl -o packer.zip https://releases.hashicorp.com/packer/1.3.3/packer_1.3.3_linux_amd64.zip && unzip packer.zip
-      - curl -o packer.zip $PACKER_ZIP_URL && unzip packer.zip
-      - echo "Validating Packer template"
-      #- ./packer validate packer_cis.json
-      - ./packer validate codebuild/$PACKER_TEMPLATE
-  build:
-    commands:
-      - ./packer build -color=false codebuild/$PACKER_TEMPLATE | tee build.log
->>>>>>> ucopacme/master
   post_build:
     commands:
       - egrep "${AWS_REGION}\:\sami\-" build.log | cut -d' ' -f2 > ami_id.txt
@@ -41,10 +27,7 @@ phases:
       - sed -i.bak "s/<<AMI-ID>>/$(cat ami_id.txt)/g" codebuild/ami_builder_event.json
       - aws events put-events --entries file://codebuild/ami_builder_event.json
       - echo "build completed on `date`"
-<<<<<<< HEAD
 
-=======
->>>>>>> ucopacme/master
 artifacts:
   files:
     - codebuild/ami_builder_event.json
