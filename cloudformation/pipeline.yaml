@@ -308,11 +308,11 @@ Resources:
     AmiBuilderNotificationTopic: 
           Type: "AWS::SNS::Topic"
           Properties: 
+            TopicName: !Sub '${ServiceName}-${PackerProjectName}-Notify'
             Subscription: 
               - 
                 Endpoint: !Ref NotificationEmailAddress
                 Protocol: "email"
-            TopicName: "AmiBuilder-Notify"
 
     AmiBuilderNotificationTopicPolicy:
       Type: AWS::SNS::TopicPolicy
@@ -334,7 +334,7 @@ Resources:
     AmiBuilderCustomEvent:
         Type: "AWS::Events::Rule"
         Properties: 
-          Description: "AmiBuilder-Complete"
+          Description: !Sub '${ServiceName}-${PackerProjectName}-Complete'
           EventPattern: 
             source: 
               - "com.ami.builder"
