@@ -36,7 +36,7 @@ Parameters:
     PackerProjectDir:
         Type: String
         Description: Dirctory where to find the packer template and associated files for this build project.
-        Default: packer_projects/amazonlinux2_x84-64
+        Default: packer_projects/amazonlinux2_x86-64
 
     PackerTemplate:
         Type: String
