@@ -3,21 +3,18 @@ version: 0.2
 phases:
   install:
     commands:
-      - echo "Validating build environment"
-      - echo "PACKER_ZIP_URL = $PACKER_ZIP_URL"
-      - echo "PACKER_PROJECT_DIR = $PACKER_PROJECT_DIR"
-      - echo "PACKER_TEMPLATE = $PACKER_TEMPLATE"
       - echo "Installing Packer"
       - curl -o packer.zip $PACKER_ZIP_URL && unzip packer.zip
 
   pre_build:
     commands:
-      - echo "Validating Packer template"
-      - ./packer validate $PACKER_PROJECT_DIR/$PACKER_TEMPLATE
+      - TEMPLATE=$PACKER_PROJECT_DIR/$PACKER_PROJECT_NAME/$PACKER_TEMPLATE_NAME
+      - echo "Validating Packer template $TEMPLATE"
+      - ./packer validate $TEMPLATE
 
   build:
     commands:
-      - ./packer build -color=false $PACKER_PROJECT_DIR/$PACKER_TEMPLATE | tee build.log
+      - ./packer build -color=false $TEMPLATE | tee build.log
 
   post_build:
     commands:
@@ -32,4 +29,5 @@ artifacts:
   files:
     - codebuild/ami_builder_event.json
     - build.log
+    - ami_id.txt
   discard-paths: yes

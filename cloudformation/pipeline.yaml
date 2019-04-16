@@ -1,4 +1,12 @@
 AWSTemplateFormatVersion: 2010-09-09
+
+# TODO:
+# - decide about BuilderVPC or just use default vpc. at least add doc per default vpc used.
+# - allow git repo to be specified by user.
+# - add param for git branch to use.
+# - update docker image in CodeBuildEnvironment
+# - update metadata for new params
+# - fix indentation
 Parameters:
 
     ServiceName:
@@ -35,13 +43,18 @@ Parameters:
 
     PackerProjectDir:
         Type: String
-        Description: Dirctory where to find the packer template and associated files for this build project.
-        Default: packer_projects/amazonlinux2_x86-64
+        Description: Directory where packer projects are staged.
+        Default: packer_projects
 
-    PackerTemplate:
+    PackerProjectName:
+        Type: String
+        Description: Name of the packer project to build.  Corresponds to a sub directory within PackerProjectDir.
+        Default: amazonlinux2
+
+    PackerTemplateName:
         Type: String
         Description: Name of the packer template file to use for this build
-        Default: packer_template.json
+        Default: template.json
 
 Metadata: 
   AWS::CloudFormation::Interface: 
@@ -164,17 +177,16 @@ Resources:
                     Value: !Ref BuilderPublicSubnet
                   - Name: PACKER_ZIP_URL
                     Value: !Ref PackerZipUrl
-<<<<<<< HEAD
                   - Name: PACKER_PROJECT_DIR
                     Value: !Ref PackerProjectDir
-=======
->>>>>>> ucopacme/master
-                  - Name: PACKER_TEMPLATE
-                    Value: !Ref PackerTemplate
+                  - Name: PACKER_PROJECT_NAME
+                    Value: !Ref PackerProjectName
+                  - Name: PACKER_TEMPLATE_NAME
+                    Value: !Ref PackerTemplateName
             ServiceRole: !GetAtt CodeBuildServiceRole.Arn
             Source: 
                 Type: CODEPIPELINE
-                BuildSpec: codebuild/buildspec_packer.yaml
+                BuildSpec: codebuild/buildspec.yaml
     
     #############
     # Pipeline  #
