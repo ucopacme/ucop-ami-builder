@@ -5,6 +5,10 @@ phases:
     commands:
       - echo "Installing Packer"
       - curl -o packer.zip $PACKER_ZIP_URL && unzip packer.zip
+      - which jq
+      - echo "Installing jq"
+      - yum install -y jq
+      - which jq
 
   pre_build:
     commands:
