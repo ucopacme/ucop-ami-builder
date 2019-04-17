@@ -29,7 +29,7 @@ phases:
 
       # post new image_id into ssm parameter store
       - SSM_PARAM_NAME=/ucop-ami-builder/$PACKER_PROJECT_NAME
-      - SSM_PARAM_VERSION=$(aws ssm put-parameter --type String --name $SSM_PARAM_NAME --value $IMAGE_ID --overwrite | jq -r '.Version')
+      - SSM_PARAM_VERSION=$(aws ec2 ssm put-parameter --type String --name $SSM_PARAM_NAME --value $IMAGE_ID --overwrite | jq -r '.Version')
       # tag the image with the ssm parameter version
       - aws ec2 create-tags --resources $IMAGE_ID --tags Key=Version,Value=$SSM_PARAM_VERSION
       - |
