@@ -40,7 +40,6 @@ phases:
         SSM_PARAM_NAME=$SSM_PARAM_NAME
         SSM_PARAM_VERSION=$SSM_PARAM_VERSION
         EOF
-      - cat outputs.sh
 
 artifacts:
   files:
