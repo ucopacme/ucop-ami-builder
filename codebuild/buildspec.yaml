@@ -43,7 +43,7 @@ phases:
 
 artifacts:
   files:
-    - codebuild/ami_builder_event.json
+    - codebuild/*
     - build.log
     - outputs.sh
   discard-paths: yes
