@@ -43,7 +43,8 @@ phases:
 
 artifacts:
   files:
-    - codebuild/*
-    - build.log
-    - outputs.sh
-  discard-paths: yes
+    - **/*
+    # - build.log
+    # - outputs.sh
+  discard-paths: no
+
