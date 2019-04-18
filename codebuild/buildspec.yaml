@@ -43,7 +43,7 @@ phases:
 
 artifacts:
   files:
-    - **/*
+    - '**/*'
     # - build.log
     # - outputs.sh
   discard-paths: no
