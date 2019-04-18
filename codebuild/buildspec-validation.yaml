@@ -1,0 +1,34 @@
+version: 0.2
+
+phases:
+  install:
+    commands:
+      - echo "Installing Packer"
+      - curl -o packer.zip $PACKER_ZIP_URL && unzip packer.zip
+      - echo "Installing jq"
+      - yum install -y jq
+      - pip install -U awscli
+
+  pre_build:
+    commands:
+      - source outputs.sh
+      - env 
+      - cp -a $PACKER_PROJECT_DIR/$PACKER_PROJECT_NAME/* .
+      - ls -la
+      - echo "Validating Packer template $TEMPLATE"
+      - ./packer validate $VALIDATE_TEMPLATE_NAME 
+  build:
+    commands:
+      - ./packer build -color=false $VALIDATE_TEMPLATE_NAME | tee validate.log
+
+  post_build:
+    commands:
+      - IMAGE_ID=$(egrep "${AWS_REGION}\:\sami\-" validate.log | cut -d ' ' -f2)
+      # Packer does not return non-zero status; we must do that if Packer build failed
+      - test -n "$IMAGE_ID" || exit 1
+      #- sed -i.bak "s/<<AMI-ID>>/$IMAGE_ID/g" codebuild/ami_builder_event.json
+      #- aws events put-events --entries file://codebuild/ami_builder_event.json
+      - echo "validation completed on `date`"
+      - [ -x validate_cleanup.sh ] && ./validate_cleanup.sh || echo 'Not found'
+      # post label into ssm parameter store on parameter version
+      - aws ssm label-parameter-version --name $SSM_PARAM_NAME --parameter-version $SSM_PARAM_VERSION  --labels AIT-approved
