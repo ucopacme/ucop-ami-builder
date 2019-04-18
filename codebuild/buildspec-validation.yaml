@@ -12,7 +12,7 @@ phases:
   pre_build:
     commands:
       - ls -la
-      - source outputs.sh
+      - source ./outputs.sh
       - env 
       - cp -a $PACKER_PROJECT_DIR/$PACKER_PROJECT_NAME/* .
       - echo "Validating Packer template $TEMPLATE"
