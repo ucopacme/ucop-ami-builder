@@ -346,6 +346,7 @@ Resources:
                         ProjectName: !Ref CodeBuildValidationProject
                       InputArtifacts:
                         - Name: BuiltZip
+                        - Name: SourceZip
 
     ######################
     # AMI Builder Event  #
