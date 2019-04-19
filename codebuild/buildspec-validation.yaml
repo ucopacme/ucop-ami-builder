@@ -23,12 +23,22 @@ phases:
 
   post_build:
     commands:
-      - IMAGE_ID=$(egrep "${AWS_REGION}\:\sami\-" validate.log | cut -d ' ' -f2)
+      - VAL_IMAGE_ID=$(egrep "${AWS_REGION}\:\sami\-" validate.log | cut -d ' ' -f2)
       # Packer does not return non-zero status; we must do that if Packer build failed
-      - test -n "$IMAGE_ID" || echo "validation failed on `date`" && exit 1
+      - >
+        test -n "$VAL_IMAGE_ID" || VALIDATION=false
+        if [ !$VALIDATION ]; then 
+           STATUS='VALIDATIONFAILED'
+           sed -i.bak "s/<<AMI-STATUS>>/$STATUS/g" codebuild/ami_builder_event.json;
+           sed -i.bak "s/<<AMI-ID>>/$IMAGE_ID/g" codebuild/ami_builder_event.json;
+           aws events put-events --entries file://codebuild/ami_builder_event.json;
+           [ -x ./codebuild/validate_cleanup.sh ] && ./codebuild/validate_cleanup.sh $IMAGE_ID || echo 'Not found';
+        else
+           [ -x ./codebuild/validate_cleanup.sh ] && ./codebuild/validate_cleanup.sh $VAL_IMAGE_ID || echo 'Not found';
+        fi
       #- sed -i.bak "s/<<AMI-ID>>/$IMAGE_ID/g" codebuild/ami_builder_event.json
       #- aws events put-events --entries file://codebuild/ami_builder_event.json
-      - echo "validation completed on `date`"
-      - "[ -x ./codebuild/validate_cleanup.sh ] && ./codebuild/validate_cleanup.sh $IMAGE_ID || echo 'Not found'"
+      #- echo "validation completed on `date`"
+      #- "[ -x ./codebuild/validate_cleanup.sh ] && ./codebuild/validate_cleanup.sh $IMAGE_ID || echo 'Not found'"
       # post label into ssm parameter store on parameter version
       #- aws ssm label-parameter-version --name $SSM_PARAM_NAME --parameter-version $SSM_PARAM_VERSION  --labels AIT-approved

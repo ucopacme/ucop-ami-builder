@@ -2,7 +2,7 @@
         {
             "Source": "com.ami.builder",
             "DetailType": "AmiBuilder",
-            "Detail": "{ \"AmiStatus\": \"Created\"}",
+            "Detail": "{ \"AmiStatus\": \"<<AMI-STATUS>>\"}",
             "Resources": [ "<<AMI-ID>>" ]
         }
 ]
