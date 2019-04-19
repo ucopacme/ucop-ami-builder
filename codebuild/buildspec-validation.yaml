@@ -25,7 +25,7 @@ phases:
     commands:
       - IMAGE_ID=$(egrep "${AWS_REGION}\:\sami\-" validate.log | cut -d ' ' -f2)
       # Packer does not return non-zero status; we must do that if Packer build failed
-      - test -n "$IMAGE_ID" || exit 1
+      - test -n "$IMAGE_ID" || echo "validation failed on `date`" && exit 1
       #- sed -i.bak "s/<<AMI-ID>>/$IMAGE_ID/g" codebuild/ami_builder_event.json
       #- aws events put-events --entries file://codebuild/ami_builder_event.json
       - echo "validation completed on `date`"
