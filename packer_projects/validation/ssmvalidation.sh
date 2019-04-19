@@ -12,6 +12,7 @@ else
   VALIDATION=false
 fi
 
+echo $VALIDATION
 
-
+exit 1
 
