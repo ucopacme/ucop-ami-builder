@@ -29,6 +29,6 @@ phases:
       #- sed -i.bak "s/<<AMI-ID>>/$IMAGE_ID/g" codebuild/ami_builder_event.json
       #- aws events put-events --entries file://codebuild/ami_builder_event.json
       - echo "validation completed on `date`"
-      - "[ -x validate_cleanup.sh ] && ./validate_cleanup.sh || echo 'Not found'"
+      - "[ -x ./codebuild/validate_cleanup.sh ] && ./codebuild/validate_cleanup.sh $IMAGE_ID || echo 'Not found'"
       # post label into ssm parameter store on parameter version
       - aws ssm label-parameter-version --name $SSM_PARAM_NAME --parameter-version $SSM_PARAM_VERSION  --labels AIT-approved
