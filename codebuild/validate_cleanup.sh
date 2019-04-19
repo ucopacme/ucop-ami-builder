@@ -6,7 +6,6 @@ ami-get-snapshot() {
     aws ec2 describe-images --owners self --image-id $1 --output json | jq -r '.Images[].BlockDeviceMappings[] | select(.Ebs != null ) | .Ebs.SnapshotId'
 }
 
-
 ami-delete() {
     snaps=$(ami-get-snapshot $1)
     aws ec2 deregister-image --image-id $1
@@ -17,7 +16,15 @@ ami-delete() {
     done
 }
 
+
+
 ami-delete $1
 
+if [ $VALIDATION ]; then
+   aws ssm label-parameter-version --name $SSM_PARAM_NAME --parameter-version $SSM_PARAM_VERSION  --labels AIT-approved
+fi
 
+
+
+ 
 

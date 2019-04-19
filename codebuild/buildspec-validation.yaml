@@ -31,4 +31,4 @@ phases:
       - echo "validation completed on `date`"
       - "[ -x ./codebuild/validate_cleanup.sh ] && ./codebuild/validate_cleanup.sh $IMAGE_ID || echo 'Not found'"
       # post label into ssm parameter store on parameter version
-      - aws ssm label-parameter-version --name $SSM_PARAM_NAME --parameter-version $SSM_PARAM_VERSION  --labels AIT-approved
+      #- aws ssm label-parameter-version --name $SSM_PARAM_NAME --parameter-version $SSM_PARAM_VERSION  --labels AIT-approved
