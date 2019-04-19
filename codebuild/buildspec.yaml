@@ -24,24 +24,24 @@ phases:
       - IMAGE_ID=$(egrep "${AWS_REGION}\:\sami\-" build.log | cut -d ' ' -f2)
       # Packer does not return non-zero status; we must do that if Packer build failed
       - test -n "$IMAGE_ID" || exit 1
-      - sed -i.bak "s/<<AMI-ID>>/$IMAGE_ID/g" codebuild/ami_builder_event.json
-      - aws events put-events --entries file://codebuild/ami_builder_event.json
+      #- sed -i.bak "s/<<AMI-ID>>/$IMAGE_ID/g" codebuild/ami_builder_event.json
+      #- aws events put-events --entries file://codebuild/ami_builder_event.json
       - echo "build completed on `date`"
 
       # post new image_id into ssm parameter store
-      - SSM_PARAM_NAME=/ucop-ami-builder/$PACKER_PROJECT_NAME
-      - SSM_PARAM_VERSION=$(aws ssm put-parameter --type String --name $SSM_PARAM_NAME --value $IMAGE_ID --overwrite | jq -r '.Version')
+      #- SSM_PARAM_NAME=/ucop-ami-builder/$PACKER_PROJECT_NAME
+      #- SSM_PARAM_VERSION=$(aws ssm put-parameter --type String --name $SSM_PARAM_NAME --value $IMAGE_ID --overwrite | jq -r '.Version')
       # tag the image with the ssm parameter version
-      - aws ec2 create-tags --resources $IMAGE_ID --tags Key=Version,Value=$SSM_PARAM_VERSION
+      #- aws ec2 create-tags --resources $IMAGE_ID --tags Key=Version,Value=$SSM_PARAM_VERSION
       - |
         cat << EOF > outputs.sh
         PACKER_PROJECT_NAME=$PACKER_PROJECT_NAME
         IMAGE_ID=$IMAGE_ID
-        SSM_PARAM_NAME=$SSM_PARAM_NAME
-        SSM_PARAM_VERSION=$SSM_PARAM_VERSION
         EOF
       - cat outputs.sh
 
+      #  SSM_PARAM_NAME=$SSM_PARAM_NAME
+      #  SSM_PARAM_VERSION=$SSM_PARAM_VERSION
 artifacts:
   files:
     - '**/*'
