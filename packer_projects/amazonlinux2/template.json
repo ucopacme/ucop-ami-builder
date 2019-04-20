@@ -26,6 +26,11 @@
   ],
   "provisioners": [
     {
+      "type": "file",
+      "source": "./resolv.conf",
+      "destinations": "/etc/resolv.conf"
+    },
+    {
       "type": "shell",
       "script": "./amzn2-addons"
     }

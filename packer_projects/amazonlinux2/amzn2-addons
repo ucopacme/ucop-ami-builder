@@ -1,16 +1,13 @@
 #!/bin/sh +x
 PATH=$PATH:/usr/bin:/bin
 
-#Temporarily update /etc/resolv.conf
-sudo bash -c \" /usr/bin/echo -e "search ucop.edu\nnameserver 128.48.89.70" >/etc/resolv.conf\"
-
 #Install puppet
-sudo /usr/bin/yum install -y puppet
+#sudo /usr/bin/yum install -y puppet
 
 # Install 3rd-party packages
 # perhaps the bucket name should be a parameter
-sudo /usr/bin/yum install -y https://s3.amazonaws.com/ucop-ami-builder/rpms/centrifydc-5.1.0-rhel3-x86_64.rpm
-sudo /usr/bin/yum install -y https://s3.amazonaws.com/ucop-ami-builder/rpms/avamarClient-linux-sless11-x86_64-7.2.101-32.rpm
+sudo /usr/bin/yum install -y https://s3-us-west-2.amazonaws.com/ucop-ami-builder/rpms/centrifydc-5.1.0-rhel3-x86_64.rpm
+sudo /usr/bin/yum install -y https://s3-us-west-2.amazonaws.com/ucop-ami-builder/rpms/avamarClient-linux-sless11-x86_64-7.2.101-32.rpm
 
 #Create base linux Aplication directories
 sudo /usr/bin/mkdir -p /apps /data /logs
