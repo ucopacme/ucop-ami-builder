@@ -21,7 +21,7 @@ yum-config-manager --enable custom_RHEL6-system
 # Install 3rd-party packages
 yum install -y CentrifyDC 
 yum install -y AvamarClient
-yum install -y puppet
+#yum install -y puppet
 
 # Create base linux Application directories
 mkdir -p /apps /data /logs
