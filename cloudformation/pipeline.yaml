@@ -31,6 +31,12 @@ Parameters:
         Description: Public Subnet ID that AMI Builder will use to launch temporary resource
         Default: "None"
 
+    BuilderSecurityGroup:
+        #Type: AWS::EC2::SecurityGroup::Id
+        Type: String
+        Description: Security group Id that AMI Builder will use to launch temporary resource
+        Default: "None"
+
     NotificationEmailAddress:
         Type: String
         Description: Email to receive new AMI ID created by AMI Builder
@@ -175,6 +181,8 @@ Resources:
                     Value: !Ref BuilderVPC
                   - Name: BUILD_SUBNET_ID
                     Value: !Ref BuilderPublicSubnet
+                  - Name: BUILD_SG_ID
+                    Value: !Ref BuilderSecurityGroup
                   - Name: PACKER_ZIP_URL
                     Value: !Ref PackerZipUrl
                   - Name: PACKER_PROJECT_DIR

@@ -5,6 +5,7 @@
     "region": "us-west-2",
     "vpc_id": "{{env `BUILD_VPC_ID`}}",
     "subnet_id": "{{env `BUILD_SUBNET_ID`}}"
+    "security_group_id": "{{env `BUILD_SG_ID`}}"
   },
   "builders": [
     {
@@ -14,7 +15,7 @@
       "region": "{{user `region`}}",
       "vpc_id": "{{user `vpc_id`}}",
       "subnet_id": "{{user `subnet_id`}}",
-      "region": "{{user `region`}}",
+      "security_group_id": "{{user `security_group_id`}}",
       "instance_type": "t2.micro",
       "ssh_username": "ec2-user",
       "ami_name": "ucop-ami-builder-amazonlinux2-{{timestamp}}",
