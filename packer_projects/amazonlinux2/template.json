@@ -2,9 +2,7 @@
   "variables": {
     "aws_access_key": "",
     "aws_secret_key": "",
-    "region": "us-west-2",
-    "vpc_id": "{{env `BUILD_VPC_ID`}}",
-    "subnet_id": "{{env `BUILD_SUBNET_ID`}}",
+    "region": "us-west-2"
   },
   "builders": [
     {
@@ -12,8 +10,19 @@
       "access_key": "{{user `aws_access_key`}}",
       "secret_key": "{{user `aws_secret_key`}}",
       "region": "{{user `region`}}",
-      "vpc_id": "{{user `vpc_id`}}",
-      "subnet_id": "{{user `subnet_id`}}",
+      "vpc_filter": {
+        "filters": {
+          "tag:Class": "ucop-ami-builder",
+          "isDefault": "false"
+        }
+      },
+      "subnet_filter": {
+        "filters": {
+          "tag:Class": "ucop-ami-builder"
+        },
+        "random": true
+      },
+
       "instance_type": "t2.micro",
       "ssh_username": "ec2-user",
       "ami_name": "ucop-ami-builder-amazonlinux2-{{timestamp}}",
