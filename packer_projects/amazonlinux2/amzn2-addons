@@ -1,17 +1,31 @@
 #!/bin/sh +x
 PATH=$PATH:/usr/bin:/bin
 
-#Install puppet
-#sudo /usr/bin/yum install -y puppet
+# Initail resolver config
+cat << EOF > /etc/resolv.conf
+search ucop.edu
+nameserver 128.48.89.70
+EOF
+
+# Install UCOP custom Repo
+cat << EOF > /etc/yum.repos.d/custom_RHEL6-system.repo
+[custom_RHEL6-system]
+name=UCOP Custom RHEL6-system
+baseurl=http://unxsmtp01.ucop.edu/repo/UCOP/RHEL6-system
+gpgcheck=0
+gpgkey=http://unxsmtp01.ucop.edu/repo/keys/ucop-smt-pubgpg.key,http://unxsmtp01.ucop.edu/repo/keys/RPM-GPG-KEY-puppetlabs
+cost=500
+EOF
+yum-config-manager --enable custom_RHEL6-system
 
 # Install 3rd-party packages
-# perhaps the bucket name should be a parameter
-sudo /usr/bin/yum install -y https://s3-us-west-2.amazonaws.com/ucop-ami-builder/rpms/centrifydc-5.1.0-rhel3-x86_64.rpm
-sudo /usr/bin/yum install -y https://s3-us-west-2.amazonaws.com/ucop-ami-builder/rpms/avamarClient-linux-sless11-x86_64-7.2.101-32.rpm
+yum install -y CentrifyDC 
+yum install -y AvamarClient
+yum install -y puppet
 
-#Create base linux Aplication directories
+# Create base linux Application directories
 sudo /usr/bin/mkdir -p /apps /data /logs
 
-#Allow passwd login
-sudo /bin/sed -i 's/#PasswordAuthentication yes/PasswordAuthentication yes/' /etc/ssh/sshd_config
+# Allow passwd login
+sed -i 's/#PasswordAuthentication yes/PasswordAuthentication yes/' /etc/ssh/sshd_config
 
