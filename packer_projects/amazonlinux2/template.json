@@ -4,7 +4,7 @@
     "aws_secret_key": "",
     "region": "us-west-2",
     "vpc_id": "{{env `BUILD_VPC_ID`}}",
-    "subnet_id": "{{env `BUILD_SUBNET_ID`}}"
+    "subnet_id": "{{env `BUILD_SUBNET_ID`}}",
     "security_group_id": "{{env `BUILD_SG_ID`}}"
   },
   "builders": [

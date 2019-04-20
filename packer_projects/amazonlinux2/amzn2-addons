@@ -24,7 +24,7 @@ yum install -y AvamarClient
 yum install -y puppet
 
 # Create base linux Application directories
-sudo /usr/bin/mkdir -p /apps /data /logs
+mkdir -p /apps /data /logs
 
 # Allow passwd login
 sed -i 's/#PasswordAuthentication yes/PasswordAuthentication yes/' /etc/ssh/sshd_config
