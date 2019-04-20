@@ -95,3 +95,7 @@ Notes
 
 codebuild env vars
 https://docs.aws.amazon.com/codebuild/latest/userguide/build-env-ref-env-vars.html
+
+debugging json syntax::
+
+  cat template.json | json_verify 
