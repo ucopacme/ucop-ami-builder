@@ -38,12 +38,12 @@ Parameters:
     PackerTemplateName:
         Type: String
         Description: Name of the packer template file to use for this build
-        Default: build.json
+        Default: template.json
 
     ValidateTemplateName:
         Type: String
         Description: Name of the packer template file to use for this validation
-        Default: validate.json
+        Default: validate-template.json
 
 Metadata: 
   AWS::CloudFormation::Interface: 

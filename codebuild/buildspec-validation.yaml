@@ -3,8 +3,6 @@ version: 0.2
 phases:
   install:
     commands:
-      #- echo "Installing Packer"
-      #- curl -o packer.zip $PACKER_ZIP_URL && unzip packer.zip
       - echo "Installing jq"
       - yum install -y jq
       - pip install -U awscli
@@ -45,10 +43,5 @@ phases:
            sed -i.bak "s/<<AMI-STATUS>>/$STATUS/g" codebuild/ami_builder_event.json;
            sed -i.bak "s/<<AMI-ID>>/$IMAGE_ID/g" codebuild/ami_builder_event.json;
            aws events put-events --entries file://codebuild/ami_builder_event.json;
+           [ -x ./codebuild/validate_cleanup.sh ] && ./codebuild/validate_cleanup.sh $IMAGE_ID || echo 'Not found';
         fi
-      #- sed -i.bak "s/<<AMI-ID>>/$IMAGE_ID/g" codebuild/ami_builder_event.json
-      #- aws events put-events --entries file://codebuild/ami_builder_event.json
-      #- echo "validation completed on `date`"
-      #- "[ -x ./codebuild/validate_cleanup.sh ] && ./codebuild/validate_cleanup.sh $IMAGE_ID || echo 'Not found'"
-      # post label into ssm parameter store on parameter version
-      #- aws ssm label-parameter-version --name $SSM_PARAM_NAME --parameter-version $SSM_PARAM_VERSION  --labels AIT-approved

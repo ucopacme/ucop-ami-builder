@@ -18,11 +18,8 @@
  ],
  "provisioners": [
   {
-   "execute_command": "sudo -E sh -eux '{{.Path}}'",
-   "scripts": [
-     "./image_validation.sh" 
-   ],
-   "type": "shell"
+   "type": "shell",
+   "script": "./ssmvalidation.sh" 
   }
 ]
 }
