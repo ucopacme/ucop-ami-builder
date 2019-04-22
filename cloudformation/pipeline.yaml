@@ -1,10 +1,6 @@
 AWSTemplateFormatVersion: 2010-09-09
 
 # TODO:
-# - decide about BuilderVPC or just use default vpc. at least add doc per default vpc used.
-# - allow git repo to be specified by user.
-# - add param for git branch to use.
-# - update docker image in CodeBuildEnvironment
 # - update metadata for new params
 # - fix indentation
 Parameters:
@@ -18,18 +14,6 @@ Parameters:
         Type: String
         Default: "eb-python-3.4-amazonlinux-64:2.3.2"
         Description: Docker image to use for CodeBuild container - Use http://amzn.to/2mjCI91 for reference
-
-    BuilderVPC:
-        #Type: AWS::EC2::VPC::Id
-        Type: String
-        Description: VPC ID that AMI Builder will use to launch temporary resource
-        Default: "None"
-
-    BuilderPublicSubnet:
-        #Type: AWS::EC2::Subnet::Id
-        Type: String
-        Description: Public Subnet ID that AMI Builder will use to launch temporary resource
-        Default: "None"
 
     NotificationEmailAddress:
         Type: String
@@ -176,10 +160,6 @@ Resources:
                 EnvironmentVariables:
                   - Name: BUILD_OUTPUT_BUCKET
                     Value: !Ref BuildArtifactsBucket
-                  - Name: BUILD_VPC_ID
-                    Value: !Ref BuilderVPC
-                  - Name: BUILD_SUBNET_ID
-                    Value: !Ref BuilderPublicSubnet
                   - Name: PACKER_ZIP_URL
                     Value: !Ref PackerZipUrl
                   - Name: PACKER_PROJECT_DIR

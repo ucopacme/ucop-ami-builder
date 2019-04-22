@@ -15,7 +15,7 @@ sudo /usr/bin/yum install -y puppet
 #Create base linux Aplication directories
 sudo /usr/bin/mkdir -p /apps /data /logs
 
-Install UCOP RHEL Repo
+#Install UCOP RHEL Repo
 sudo bash -c \"/usr/bin/echo -e '[UCOP-RHEL6] \nname=UCOP RHEL6 \nbaseurl=http://unxyump02.devops.ucop.edu/yum/rhel-6-server-rpms \ngpgcheck=0 \ncost=500 \nenabled=1' >/etc/yum.repos.d/UCOP-RHEL6.repo\"
 sudo /usr/bin/yum-config-manager --enable UCOP-RHEL6
 
