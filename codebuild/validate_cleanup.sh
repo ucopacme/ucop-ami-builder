@@ -20,7 +20,6 @@ ami-delete() {
 
 ami-delete $1
 
-aws ssm label-parameter-version --name $SSM_PARAM_NAME --parameter-version $SSM_PARAM_VERSION  --labels AIT-approved
 
 
 
