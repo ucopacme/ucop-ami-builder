@@ -1,0 +1,31 @@
+#!/bin/sh +x
+PATH=$PATH:/usr/bin:/bin
+
+# Initail resolver config
+cat << EOF > /etc/resolv.conf
+search ucop.edu
+nameserver 128.48.89.70
+EOF
+
+# Install UCOP custom Repo
+cat << EOF > /etc/yum.repos.d/custom_RHEL6-system.repo
+[custom_RHEL6-system]
+name=UCOP Custom RHEL6-system
+baseurl=http://unxsmtp01.ucop.edu/repo/UCOP/RHEL6-system
+gpgcheck=0
+gpgkey=http://unxsmtp01.ucop.edu/repo/keys/ucop-smt-pubgpg.key,http://unxsmtp01.ucop.edu/repo/keys/RPM-GPG-KEY-puppetlabs
+cost=500
+EOF
+yum-config-manager --enable custom_RHEL6-system
+
+# Install 3rd-party packages
+yum install -y CentrifyDC 
+yum install -y AvamarClient
+#yum install -y puppet
+
+# Create base linux Application directories
+mkdir -p /apps /data /logs
+
+# Allow passwd login
+sed -i 's/#PasswordAuthentication yes/PasswordAuthentication yes/' /etc/ssh/sshd_config
+

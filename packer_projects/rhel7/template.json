@@ -1,0 +1,66 @@
+{
+"variables": {
+        "aws_access_key": "",
+        "aws_secret_key": "",
+        "region":         "us-west-2"
+    },
+    "builders": [
+        {
+            "access_key": "{{user `aws_access_key`}}",
+            "ami_name": "packer-linux-aws-demo-{{timestamp}}",
+            "instance_type": "t2.micro",
+            "region": "us-west-2",
+            "secret_key": "{{user `aws_secret_key`}}",
+            "source_ami_filter": {
+              "filters": {
+              "virtualization-type": "hvm",
+              "name": "RHEL-7.6*Hourly2-GP2",
+              "root-device-type": "ebs"
+              },
+              "owners": ["309956199498"],
+              "most_recent": true
+            },
+            "ssh_username": "ec2-user",
+            "type": "amazon-ebs"
+        }
+    ],
+    "provisioners": [
+     {
+            "type": "file",
+            "source": "./avamarClient-linux-sless11-x86_64-7.2.101-32.rpm",
+            "destination": "/tmp/"
+        },
+        {
+            "type": "shell",
+            "inline":[
+                    "sudo rpm -i /tmp/avamarClient-linux-sless11-x86_64-7.2.101-32.rpm"
+            ]
+        },
+        {
+            "type": "file",
+            "source": "./centrifydc-5.1.0-rhel3-x86_64.rpm",
+            "destination": "/tmp/"
+        },
+        {
+            "type": "shell",
+            "inline":[
+                    "sudo rpm -i /tmp/centrifydc-5.1.0-rhel3-x86_64.rpm"
+            ]
+        },
+        {
+            "type": "file",
+            "source": "./amazon-cloudwatch-agent.rpm",
+            "destination": "/tmp/"
+        },
+        {
+            "type": "shell",
+            "inline":[
+                    "sudo rpm -i /tmp/amazon-cloudwatch-agent.rpm"
+            ]
+        },
+        {
+          "type": "shell",
+          "script": "./rhel7-addons"
+        }
+    ]
+}
