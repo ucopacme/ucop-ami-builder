@@ -19,7 +19,7 @@ VALIDATION=true
 rpm -q CentrifyDC >/dev/null 2>&1 || VALIDATION=false
 rpm -q AvamarClient >/dev/null 2>&1 || VALIDATION=false
 
-if VALIDATION=false; then
+if ! $VALIDATION ; then
   echo 'AMI validation failed'
   exit 1
 fi
