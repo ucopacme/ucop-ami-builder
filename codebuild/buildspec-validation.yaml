@@ -10,6 +10,7 @@ phases:
   pre_build:
     commands:
       - ls -la
+      - ls -la codebuild
       - source ./outputs.sh
       - env 
       - cp -a $PACKER_PROJECT_DIR/$PACKER_PROJECT_NAME/* .
@@ -27,7 +28,7 @@ phases:
       - test -n "$VAL_IMAGE_ID" || VALIDATION=false
       - echo $VALIDATION
       - >
-        if [ $VALIDATION ]; then 
+        if $VALIDATION ; then 
            STATUS='CREATED'
            echo $STATUS
            sed -i.bak "s/<<AMI-STATUS>>/$STATUS/g" codebuild/ami_builder_event.json;
@@ -39,7 +40,7 @@ phases:
             # tag the image with the ssm parameter version
            aws ec2 create-tags --resources $IMAGE_ID --tags Key=Version,Value=$SSM_PARAM_VERSION;
 
-           [ -x ./codebuild/validate_cleanup.sh ] && ./codebuild/validate_cleanup.sh $VAL_IMAGE_ID || echo 'File validate_cleanup.sh not found';
+           [ -x codebuild/validate_cleanup.sh ] && ./codebuild/validate_cleanup.sh $VAL_IMAGE_ID || echo 'File validate_cleanup.sh not found';
            aws ssm label-parameter-version --name $SSM_PARAM_NAME --parameter-version $SSM_PARAM_VERSION  --labels AIT-approved;
         else
            STATUS='VALIDATIONFAILED'
@@ -47,5 +48,5 @@ phases:
            sed -i.bak "s/<<AMI-STATUS>>/$STATUS/g" codebuild/ami_builder_event.json;
            sed -i.bak "s/<<AMI-ID>>/$IMAGE_ID/g" codebuild/ami_builder_event.json;
            aws events put-events --entries file://codebuild/ami_builder_event.json;
-           [ -x ./codebuild/validate_cleanup.sh ] && ./codebuild/validate_cleanup.sh $IMAGE_ID || echo 'Not found';
+           [ -x codebuild/validate_cleanup.sh ] && ./codebuild/validate_cleanup.sh $IMAGE_ID || echo 'Not found';
         fi

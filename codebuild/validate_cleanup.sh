@@ -17,7 +17,7 @@ ami-delete() {
 }
 
 
-
+# Validate delete
 ami-delete $1
 
 

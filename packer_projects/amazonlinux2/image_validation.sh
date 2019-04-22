@@ -16,8 +16,8 @@ VALIDATION=true
 [ -d /data ] || VALIDATION=false
 
 # 3rd party packages
-rpm -q CentrifyDC >/dev/null 2&>1 || VALIDATION=false
-rpm -q AvamarClient >/dev/null 2&>1 || VALIDATION=false
+rpm -q CentrifyDC >/dev/null 2>&1 || VALIDATION=false
+rpm -q AvamarClient >/dev/null 2>&1 || VALIDATION=false
 
 if VALIDATION=false; then
   echo 'AMI validation failed'
