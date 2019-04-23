@@ -40,6 +40,11 @@ Parameters:
         Description: Name of the packer template file to use for this build
         Default: template.json
 
+    ValidateTemplateName:
+        Type: String
+        Description: Name of the packer template file to use for this validation
+        Default: validate-template.json
+
 Metadata: 
   AWS::CloudFormation::Interface: 
     ParameterGroups: 
@@ -168,6 +173,32 @@ Resources:
                 Type: CODEPIPELINE
                 BuildSpec: codebuild/buildspec.yaml
     
+    CodeBuildValidationProject:
+        Type: AWS::CodeBuild::Project
+        Properties:
+            Name: !Sub '${ServiceName}-${PackerProjectName}_validate'
+            Artifacts:
+                Type: CODEPIPELINE
+            Environment: 
+                Type: LINUX_CONTAINER
+                ComputeType: BUILD_GENERAL1_SMALL
+                Image: !Sub 'aws/codebuild/${CodeBuildEnvironment}'
+                EnvironmentVariables:
+                  - Name: BUILD_OUTPUT_BUCKET
+                    Value: !Ref BuildArtifactsBucket
+                  - Name: PACKER_ZIP_URL
+                    Value: !Ref PackerZipUrl
+                  - Name: PACKER_PROJECT_DIR
+                    Value: !Ref PackerProjectDir
+                  - Name: PACKER_PROJECT_NAME
+                    Value: !Ref PackerProjectName
+                  - Name: VALIDATE_TEMPLATE_NAME
+                    Value: !Ref ValidateTemplateName
+            ServiceRole: !GetAtt CodeBuildServiceRole.Arn
+            Source: 
+                Type: CODEPIPELINE
+                BuildSpec: codebuild/buildspec-validation.yaml
+
     #############
     # Pipeline  #
     #############
@@ -236,8 +267,9 @@ Resources:
                           - 'codebuild:StopBuild'
                           - 'codebuild:BatchGetBuilds'
                         Effect: Allow
-                        Resource: !GetAtt CodeBuildProject.Arn
-
+                        Resource: 
+                          - !GetAtt CodeBuildProject.Arn
+                          - !GetAtt CodeBuildValidationProject.Arn 
 
     Pipeline:
         Type: AWS::CodePipeline::Pipeline
@@ -279,6 +311,20 @@ Resources:
                       InputArtifacts:
                         - Name: SourceZip
                       OutputArtifacts:
+                        - Name: BuiltZip
+                - 
+                  Name: Validate
+                  Actions:
+                    - 
+                      Name: CodeBuild-validate
+                      ActionTypeId:
+                        Category: Build
+                        Owner: AWS
+                        Provider: CodeBuild
+                        Version: 1
+                      Configuration:
+                        ProjectName: !Ref CodeBuildValidationProject
+                      InputArtifacts:
                         - Name: BuiltZip
 
     ######################

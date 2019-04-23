@@ -1,0 +1,52 @@
+version: 0.2
+
+phases:
+  install:
+    commands:
+      - echo "Installing jq"
+      - yum install -y jq
+      - pip install -U awscli
+
+  pre_build:
+    commands:
+      - ls -la
+      - ls -la codebuild
+      - source ./outputs.sh
+      - env 
+      - cp -a $PACKER_PROJECT_DIR/$PACKER_PROJECT_NAME/* .
+      - echo "Validating Packer template $TEMPLATE"
+      - ./packer validate $VALIDATE_TEMPLATE_NAME 
+  build:
+    commands:
+      - ./packer build -color=false $VALIDATE_TEMPLATE_NAME | tee validate.log
+
+  post_build:
+    commands:
+      - VAL_IMAGE_ID=$(egrep "${AWS_REGION}\:\sami\-" validate.log | cut -d ' ' -f2)
+      # Packer does not return non-zero status; we must do that if Packer build failed
+      - VALIDATION=true 
+      - test -n "$VAL_IMAGE_ID" || VALIDATION=false
+      - echo $VALIDATION
+      - >
+        if $VALIDATION ; then 
+           STATUS='CREATED'
+           echo $STATUS
+           sed -i.bak "s/<<AMI-STATUS>>/$STATUS/g" codebuild/ami_builder_event.json;
+           sed -i.bak "s/<<AMI-ID>>/$IMAGE_ID/g" codebuild/ami_builder_event.json;
+           aws events put-events --entries file://codebuild/ami_builder_event.json;
+           # post new image_id into ssm parameter store
+           SSM_PARAM_NAME=/ucop-ami-builder/$PACKER_PROJECT_NAME;
+           SSM_PARAM_VERSION=$(aws ssm put-parameter --type String --name $SSM_PARAM_NAME --value $IMAGE_ID --overwrite | jq -r '.Version');
+            # tag the image with the ssm parameter version
+           aws ec2 create-tags --resources $IMAGE_ID --tags Key=Version,Value=$SSM_PARAM_VERSION;
+
+           [ -x codebuild/validate_cleanup.sh ] && ./codebuild/validate_cleanup.sh $VAL_IMAGE_ID || echo 'File validate_cleanup.sh not found';
+           aws ssm label-parameter-version --name $SSM_PARAM_NAME --parameter-version $SSM_PARAM_VERSION  --labels AIT-approved;
+        else
+           STATUS='VALIDATIONFAILED'
+           echo $STATUS
+           sed -i.bak "s/<<AMI-STATUS>>/$STATUS/g" codebuild/ami_builder_event.json;
+           sed -i.bak "s/<<AMI-ID>>/$IMAGE_ID/g" codebuild/ami_builder_event.json;
+           aws events put-events --entries file://codebuild/ami_builder_event.json;
+           [ -x codebuild/validate_cleanup.sh ] && ./codebuild/validate_cleanup.sh $IMAGE_ID || echo 'Not found';
+        fi

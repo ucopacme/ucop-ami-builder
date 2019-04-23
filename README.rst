@@ -124,3 +124,9 @@ https://docs.aws.amazon.com/codebuild/latest/userguide/build-env-ref-env-vars.ht
 debugging json syntax::
 
   cat template.json | json_verify 
+
+validating packer templates::
+  > export IMAGE_ID=my_ami
+  > ~/bin/packer validate validate-template.json 
+  Template validated successfully.
+
