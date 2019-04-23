@@ -1,35 +1,30 @@
 #!/bin/sh +x
 PATH=$PATH:/usr/bin:/bin
 
-#Temporarily update /etc/resolv.conf
-sudo bash -c \" /usr/bin/echo -e "search ucop.edu\nnameserver 128.48.89.70" >/etc/resolv.conf\"
-
-#yum update -y
-
-#install wget
-sudo yum install wget
-
-#Install puppet
-sudo /usr/bin/yum install -y puppet
-
 #Create base linux Aplication directories
-sudo /usr/bin/mkdir -p /apps /data /logs
+mkdir -p /apps /data /logs
 
-#Install UCOP RHEL Repo
-sudo bash -c \"/usr/bin/echo -e '[UCOP-RHEL6] \nname=UCOP RHEL6 \nbaseurl=http://unxyump02.devops.ucop.edu/yum/rhel-6-server-rpms \ngpgcheck=0 \ncost=500 \nenabled=1' >/etc/yum.repos.d/UCOP-RHEL6.repo\"
-sudo /usr/bin/yum-config-manager --enable UCOP-RHEL6
+# Install UCOP custom Repo
+cat << EOF > /etc/yum.repos.d/custom_RHEL6-system.repo
+[custom_RHEL6-system]
+name=UCOP Custom RHEL6-system
+baseurl=http://unxsmtp01.ucop.edu/repo/UCOP/RHEL6-system
+gpgcheck=0
+gpgkey=http://unxsmtp01.ucop.edu/repo/keys/ucop-smt-pubgpg.key,http://unxsmtp01.ucop.edu/repo/keys/RPM-GPG-KEY-puppetlabs
+cost=500
+EOF
 
+yum-config-manager --enable custom_RHEL6-system
 
-
-#prep for python
-sudo yum install -y zip2 bzip2-devel readline-devel sqlite sqlite-devel xz xz-devel zlib* openssl-devel
-
+# Install 3rd-party packages
+yum install -y CentrifyDC
+yum install -y AvamarClient
 
 #Install SSM
-sudo /usr/bin/yum install -y https://s3.amazonaws.com/ec2-downloads-windows/SSMAgent/latest/linux_amd64/amazon-ssm-agent.rpm
-sudo /usr/bin/systemctl enable amazon-ssm-agent
-sudo /usr/bin/systemctl start amazon-ssm-agent
+yum install -y https://s3.amazonaws.com/ec2-downloads-windows/SSMAgent/latest/linux_amd64/amazon-ssm-agent.rpm
+systemctl enable amazon-ssm-agent
+systemctl start amazon-ssm-agent
 
 #Allow passwd login
-sudo /bin/sed -i 's/#PasswordAuthentication yes/PasswordAuthentication yes/' /etc/ssh/sshd_config
+sed -i 's/#PasswordAuthentication yes/PasswordAuthentication yes/' /etc/ssh/sshd_config
 
