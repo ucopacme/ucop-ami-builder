@@ -7,7 +7,7 @@ Currently supported packer projects:
 
 - amazonlinux2
 - windowsserver2016
-- rhel76
+- rhel7
 
 
 Launching a ucop-ami-builder pipeline
