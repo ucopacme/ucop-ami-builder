@@ -16,7 +16,7 @@ Currently supported projects:
 
 - amazonlinux2
 - windows2016
-- rhel76
+- rhel7
 
 The first build stage runs packer to generate a custom AMI based on the latest
 AWS hosted image for the selected OS platform.
