@@ -12,8 +12,11 @@
     "region": "{{user `region`}}",
     "source_ami": "{{user `image_id`}}", 
     "instance_type": "t2.micro",
-    "ssh_username": "ec2-user",
-    "ami_name": "ucop-ami-builder-validation-{{timestamp}}"
+    "ami_name": "ucop-ami-builder-validation-{{timestamp}}",
+    "user_data_file": "./bootstrap_win.txt",
+    "communicator": "winrm",
+    "winrm_username": "Administrator",
+    "winrm_password": "SuperS3cr3t!"
   }],
   "provisioners": [
     {
