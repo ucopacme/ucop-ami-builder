@@ -20,7 +20,7 @@
         "most_recent": true,
         "owners": "amazon"
       },
-      "ami_name": "packer-demo-{{timestamp}}",
+      "ami_name": "ucop-ami-builder-windows2016-{{timestamp}}",
       "user_data_file": "./bootstrap_win.txt",
       "communicator": "winrm",
       "winrm_username": "Administrator",
