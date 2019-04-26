@@ -25,7 +25,7 @@
 
       "instance_type": "t2.micro",
       "ssh_username": "ec2-user",
-      "ami_name": "ucop-ami-builder-rhel7-{{timestamp}}",
+      "ami_name": "ucop-ami-builder-rhel76-{{timestamp}}",
       "source_ami_filter": {
         "owners": ["309956199498"],
         "most_recent": true,
@@ -41,7 +41,7 @@
     {
       "execute_command": "sudo -E sh -eux '{{.Path}}'",
       "scripts": [
-        "./rhel7-addons"
+        "./rhel76-addons"
       ],
       "type": "shell"
     }
